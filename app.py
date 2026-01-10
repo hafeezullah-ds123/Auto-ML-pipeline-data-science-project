@@ -21,7 +21,7 @@ from sklearn.metrics import r2_score, accuracy_score, make_scorer
 st.set_page_config(page_title="Advanced AutoML Pipeline", layout="wide")
 st.title("🚀 Advanced AutoML Pipeline 🤖")
 st.markdown(
-    "Upload a dataset → Select target → Auto clean → Auto train → Download best model"
+    "Upload a dataset → Select target → Auto clean → Auto train → Download best model → Make Predictions \n Developed by Hafeezullah and Hassan Kamal"
 )
 # ================= Upload =================
 uploaded_file = st.file_uploader("📂 Upload CSV file", type=["csv"])
@@ -158,6 +158,7 @@ if uploaded_file:
             grid.fit(X_train, y_train)
             best_pipe = grid.best_estimator_
             st.info(f"Best Params⚙️: {grid.best_params_}")
+            
         else:
             best_pipe.fit(X_train, y_train)
 
