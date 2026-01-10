@@ -71,7 +71,7 @@ if uploaded_file:
 
         # ================= Preprocessing =================
         st.subheader("⚙️ Model Training Started")
-        st.write("App will apply differnt models to select best model Automatically")
+        st.write("App will apply multiple models to select best model Automatically")
         preprocessor = ColumnTransformer([
             ("num", Pipeline([
                 ("imputer", SimpleImputer(strategy="mean")),
