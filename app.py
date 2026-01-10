@@ -30,7 +30,7 @@ if uploaded_file:
     df = pd.read_csv(uploaded_file)
     st.dataframe(df.head())
 
-    target_col = st.selectbox("🎯 Select Target Column", df.columns)
+    target_col = st.selectbox("🎯 Please Select Target Column", df.columns)
         # ================= Cleaning =================
     if target_col:
         before = df.shape[0]
@@ -38,12 +38,13 @@ if uploaded_file:
         st.info(f"Removed {before - df.shape[0]} Rows with null values in target colunm")
 
         # ================= Detect Problem =================
+        st.subheader("🔍 Detecting Problem Type")
         if df[target_col].dtype in ["int64", "float64"] and df[target_col].nunique() > 10:
             problem_type = "Regression"
         else:
             problem_type = "Classification"
 
-        st.success(f"Detected: **{problem_type}**")
+        st.success(f"Problem Detected: **{problem_type}**")
 
 
         num_cols_all = df.select_dtypes(include=["int64", "float64"]).columns.tolist()
@@ -69,6 +70,7 @@ if uploaded_file:
             mime="text/csv"
         )
         # ================= Split X & y =================
+        st.subheader("Separating Numeric and Categorical Columns")
         X = df.drop(columns=[target_col])
         y = df[target_col]
 
@@ -82,6 +84,8 @@ if uploaded_file:
         st.write("🔤 Categorical Columns:", cat_cols)
 
         # ================= Preprocessing =================
+        st.subheader("⚙️ Model Training Started")
+        st.write("App apply differnt models to select best model automatically")
         preprocessor = ColumnTransformer([
             ("num", Pipeline([
                 ("imputer", SimpleImputer(strategy="mean")),
@@ -137,7 +141,7 @@ if uploaded_file:
             except:
                 st.warning(f"{name} failed CV")
 
-        st.success(f"🏆 Best Base Model: **{best_name}**")
+        st.success(f"🏆 Best Base Model Selected: **{best_name}**")
 
         # ================= Hyperparameter Tuning =================
         st.subheader("⚙️ Hyperparameter Tuning")
@@ -158,6 +162,7 @@ if uploaded_file:
             grid.fit(X_train, y_train)
             best_pipe = grid.best_estimator_
             st.info(f"Best Params⚙️: {grid.best_params_}")
+            st.success(f"Hyperparameter Tuning Done ✅")
             
         else:
             best_pipe.fit(X_train, y_train)
