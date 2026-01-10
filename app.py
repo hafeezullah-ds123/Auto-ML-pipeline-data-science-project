@@ -21,8 +21,9 @@ from sklearn.metrics import r2_score, accuracy_score, make_scorer
 st.set_page_config(page_title="Advanced AutoML Pipeline", layout="wide")
 st.title("🚀 Advanced AutoML Pipeline 🤖")
 st.markdown(
-    "Upload a dataset → Select target → Auto clean → Auto train → Download best model → Make Predictions \n Developed by Hafeezullah and Hassan Kamal"
+    "Upload a dataset → Select target → Auto cleans target → Auto training on multiple models → Select best model → Download best model → Make Predictions."
 )
+st.markdown("Developed by Hafeezullah and Hassan Kamal")
 # ================= Upload =================
 uploaded_file = st.file_uploader("📂 Upload CSV file", type=["csv"])
 
@@ -35,7 +36,7 @@ if uploaded_file:
     if target_col:
         before = df.shape[0]
         df = df.dropna(subset=[target_col])
-        st.info(f"Removed {before - df.shape[0]} Rows with null values in target colunm")
+        st.info(f"Automatically Removed {before - df.shape[0]} Rows with null values in target colunm")
 
         # ================= Detect Problem =================
         st.subheader("🔍 Detecting Problem Type")
@@ -44,27 +45,12 @@ if uploaded_file:
         else:
             problem_type = "Classification"
 
-        st.success(f"Problem Detected: **{problem_type}**")
+        st.success(f"Problem Detected✅. It is **{problem_type}** Problem")
 
-
-        num_cols_all = df.select_dtypes(include=["int64", "float64"]).columns.tolist()
-        if target_col in num_cols_all:
-            num_cols_all.remove(target_col)
-
-        def remove_outliers_iqr(data, cols):
-            for c in cols:
-                Q1, Q3 = data[c].quantile([0.25, 0.75])
-                IQR = Q3 - Q1
-                data = data[(data[c] >= Q1 - 1.5*IQR) & (data[c] <= Q3 + 1.5*IQR)]
-            return data
-
-        before = df.shape[0]
-        df = remove_outliers_iqr(df, num_cols_all)
-        st.info(f"Removed {before - df.shape[0]} outlier rows in numerical colunms")
         # ================= Download Cleaned CSV =================
         cleaned_csv = df.to_csv(index=False).encode("utf-8")
         st.download_button(
-            label="⬇️ Download Cleaned CSV (Removed rows with null values and outliers )",
+            label="⬇️ Download Cleaned CSV (Removed rows with null values in target )",
             data=cleaned_csv,
             file_name="cleaned_dataset.csv",
             mime="text/csv"
@@ -85,7 +71,7 @@ if uploaded_file:
 
         # ================= Preprocessing =================
         st.subheader("⚙️ Model Training Started")
-        st.write("App apply differnt models to select best model automatically")
+        st.write("App will apply differnt models to select best model Automatically")
         preprocessor = ColumnTransformer([
             ("num", Pipeline([
                 ("imputer", SimpleImputer(strategy="mean")),
@@ -119,6 +105,7 @@ if uploaded_file:
                 "Naive Bayes": GaussianNB()
             }
             scoring = make_scorer(accuracy_score)
+            st.success("Model Training Done ✅")
 
         # ================= CV Evaluation =================
         st.subheader("📊 Model Comparison")
@@ -175,12 +162,12 @@ st.download_button(
             file_name="best_model.pkl"
         )
 
-st.success("✅ Advanced AutoML Pipeline Completed")
+st.success("✅AutoML training Pipeline Completed")
 # =========================================================
 # ============== ADVANCED PREDICTION UI ===================
 # =========================================================
 st.sidebar.markdown("---")
-st.sidebar.subheader("🔮 Prediction")
+st.sidebar.subheader("🔮 Make Prediction")
 
 if st.sidebar.checkbox("Open Prediction Panel"):
     st.title("🔮 Smart Prediction System")
