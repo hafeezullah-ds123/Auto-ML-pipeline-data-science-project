@@ -59,11 +59,11 @@ if uploaded_file:
 
         before = df.shape[0]
         df = remove_outliers_iqr(df, num_cols_all)
-        st.info(f"Removed {before - df.shape[0]} outlier rows in target colunm")
+        st.info(f"Removed {before - df.shape[0]} outlier rows in numerical colunms")
         # ================= Download Cleaned CSV =================
         cleaned_csv = df.to_csv(index=False).encode("utf-8")
         st.download_button(
-            label="⬇️ Download Cleaned CSV (Removed rows with null values,duplicates and outliers in target)",
+            label="⬇️ Download Cleaned CSV (Removed rows with null values and outliers )",
             data=cleaned_csv,
             file_name="cleaned_dataset.csv",
             mime="text/csv"
