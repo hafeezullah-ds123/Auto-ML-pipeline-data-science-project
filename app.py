@@ -23,12 +23,13 @@ st.title("🚀 Advanced AutoML Pipeline 🤖")
 st.markdown(
     "Upload a dataset → Select target → Auto cleans target → Auto training on multiple models → Select best model → Download best model → Make Predictions."
 )
-st.markdown("Developed by Hafeezullah and Hassan Kamal")
+st.markdown("Developed by Hafeezullah , Hassan Kamal and Asim Hussain")
 # ================= Upload =================
 uploaded_file = st.file_uploader("📂 Upload CSV file", type=["csv"])
 
 if uploaded_file:
     df = pd.read_csv(uploaded_file)
+    df.columns = df.columns.str.strip()
     st.dataframe(df.head())
 
     target_col = st.selectbox("🎯 Please Select Target Column", df.columns)
@@ -71,7 +72,8 @@ if uploaded_file:
 
         # ================= Preprocessing =================
         st.subheader("⚙️ Model Training Started")
-        st.write("App will apply multiple models to select best model Automatically")
+        st.write("App will apply multiple models to select best model Automatically.")
+        st.subheader("Model will Automatically do Scaling and OneHotEncoder Respectively")
         preprocessor = ColumnTransformer([
             ("num", Pipeline([
                 ("imputer", SimpleImputer(strategy="mean")),
@@ -148,7 +150,7 @@ if uploaded_file:
             )
             grid.fit(X_train, y_train)
             best_pipe = grid.best_estimator_
-            st.info(f"Best Params⚙️: {grid.best_params_}")
+            st.info(f"Best Params⚙️ selected: {grid.best_params_}")
             st.success(f"Hyperparameter Tuning Done ✅")
             
         else:
